@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:wght@400;500;700;900&display=swap");
+
+:root {
+  --font-primary-family: "Poppins", sans-serif;
+  --font-secondary-family: "Roboto", sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 900;
+}
+
+body {
+  font-family: var(--font-primary-family);
+  font-weight: var(--font-weight-normal);
+}
+#right-side {
+  background-image: url("../public/Oubey_mac.JPG");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.sidebar-right {
+  background-color: #ffffffa0;
+  backdrop-filter: blur(5px);
+  padding: 2rem;
+  border-radius: 5px;
+}
+.h1 {
+  font-weight: var(--font-weight-extra-bold);
+  font-family: var(--font-secondary-family);
+  font-size: 2rem;
+}
+.h2 {
+  font-family: var(--font-primary-family);
+  font-size: 1.5rem;
+}
