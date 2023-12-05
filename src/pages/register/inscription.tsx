@@ -14,11 +14,14 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "../../components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const Inscription = () => {
+export default function Inscription() {
   const { toast } = useToast();
+
+  const navigate = useNavigate();
 
   const formSchema = z.object({
     firstname: z.string().min(2).max(50),
@@ -59,20 +62,25 @@ const Inscription = () => {
         title: "hello, vous êtes bien enregistré ",
         description: `Bienvenue ${registerForm.getValues("firstname")}`,
       });
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     }
+
     registerForm.reset();
-    console.log(values);
+
+    console.log(values, registerForm.formState.isValid);
   }
 
   return (
-    <section className="container flex flex-col h-screen bg-green-500 justify-around items-center">
+    <section className="container flex flex-col h-screen justify-around items-center">
       <div>
         <p className="h2"> Enregistrez-vous</p>
       </div>
       <Form {...registerForm}>
         <form
           onSubmit={registerForm.handleSubmit(onSubmit)}
-          className="w-full bg-slate-100 sm:w-1/2 shadow-black shadow-md rounded-sm p-4">
+          className="w-full bg-slate-100 sm:w-1/2 shadow-black py-10 px-5 shadow-md rounded-sm p-4">
           <FormField
             control={registerForm.control}
             name="firstname"
@@ -162,6 +170,4 @@ const Inscription = () => {
       </Form>
     </section>
   );
-};
-
-export default Inscription;
+}

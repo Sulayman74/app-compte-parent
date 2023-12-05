@@ -12,13 +12,15 @@ import {
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Link } from "react-router-dom";
+import { login } from "../../api";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "../../components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const Login = () => {
   const { toast } = useToast();
-
+  const navigate = useNavigate();
   const formSchema = z.object({
     email: z.string().email({
       message: "Veuillez entrer une adresse valide",
@@ -47,14 +49,33 @@ const Login = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    if (loginForm.formState.isValid) {
+
+    if (login) {
       toast({
         title: "Votre accès est autorisé",
         description: `Bienvenue ${loginForm.getValues("email")}`,
+        variant: "success",
+      });
+      loginForm.reset();
+
+      try {
+        login(values).then((token: any) => {
+          const access_token = token.access_token;
+          console.log("valeurs user", token.access_token);
+          localStorage.setItem("token", access_token);
+        });
+        navigate("/dashboard");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast({
+        title: "Votre accès est refusé",
+        description: "Veuillez vérifer vos identifiants",
+        variant: "destructive",
       });
       loginForm.reset();
     }
-
     console.log(values);
   }
   return (

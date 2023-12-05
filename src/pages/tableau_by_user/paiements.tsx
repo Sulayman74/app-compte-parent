@@ -8,10 +8,51 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
+import { getPaiementByUser, getUserIDFromToken } from "../../api";
+import { useEffect, useState } from "react";
 
 import { DateTime } from "luxon";
 
+export interface Paiement {
+  id: string;
+  createdAt: Date;
+  userId: string;
+  amout: number;
+}
+
 const Paiements = () => {
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    // Supposons que vous stockez le token JWT dans localStorage après le login
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      // Utilisez la fonction de l'utilitaire pour obtenir l'ID de l'utilisateur depuis le token JWT
+      const userIdFromToken = getUserIDFromToken(token);
+
+      // Stockez l'ID de l'utilisateur dans l'état
+      console.log(userIdFromToken);
+      setUserId(userIdFromToken);
+    }
+  }, []); // Le tableau vide en tant que dépendance signifie que cela s'exécute une seule fois lors du montage
+
+  const [paiement, setPaiement] = useState([]);
+
+  useEffect(() => {
+    const fetchPaiement = async () => {
+      try {
+        const userData = await getPaiementByUser(userId).then((value: any) => {
+          console.log(value);
+          setPaiement(value);
+        });
+        fetchPaiement();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  }, []);
+
   const formatDate = (timeStamp: number) => {
     const date = DateTime.fromMillis(timeStamp);
     return date.toFormat("dd/MM/yyyy");
@@ -55,6 +96,12 @@ const Paiements = () => {
           </TableRow>
         </TableFooter>
       </Table>
+
+      <div>
+        <h2>Hello world</h2>
+        <p>{paiement}</p>
+        <p>{userId}</p>
+      </div>
     </div>
   );
 };

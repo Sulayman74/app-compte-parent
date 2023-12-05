@@ -8,34 +8,65 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
+import { useEffect, useState } from "react";
 
 import { DateTime } from "luxon";
+import { getUsers } from "../../api";
 
-const Bilan = () => {
+export interface User {
+  id: string;
+  firstname: string;
+  lastname: string;
+  description?: string;
+  email: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  role: string[];
+  password: string;
+}
+
+export const Bilan = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersData = await getUsers();
+        setUsers(usersData);
+        console.log("usersData", usersData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
   const formatDate = (timeStamp: any) => {
-    const date = DateTime.fromMillis(timeStamp);
+    const date = DateTime.fromISO(timeStamp);
     return date.toFormat("dd/MM/yyyy");
   };
 
   return (
     <div className="container h-screen flex justify-center items-center">
-      <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+      <Table className="h-full">
+        <TableCaption>
+          <p>Liste des utilisateurs</p>
+        </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead className="w-[100px]">Commentaires</TableHead>
             <TableHead>Date d'ajout</TableHead>
             <TableHead>Id donateur</TableHead>
-            <TableHead className="text-right">Montant</TableHead>
+            <TableHead>Email</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.id}>
-              <TableCell className="font-medium">{invoice.id}</TableCell>
-              <TableCell>{formatDate(invoice.createdAt)}</TableCell>
-              <TableCell>{invoice.userId}</TableCell>
-              <TableCell className="text-right">{invoice.montant}</TableCell>
+          {users.map((user: User) => (
+            <TableRow key={user.id}>
+              <TableCell className="font-medium">{user?.description}</TableCell>
+              <TableCell>{formatDate(user.createdAt)}</TableCell>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.email}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -51,48 +82,3 @@ const Bilan = () => {
 };
 
 export default Bilan;
-
-const invoices = [
-  {
-    id: "INV001",
-    userId: "Paid",
-    montant: "$250.00",
-    createdAt: 1659218400000,
-  },
-  {
-    id: "INV002",
-    userId: "Pending",
-    montant: "$150.00",
-    createdAt: 1659132000000,
-  },
-  {
-    id: "INV003",
-    userId: "Unpaid",
-    montant: "$350.00",
-    createdAt: 1659045600000,
-  },
-  {
-    id: "INV004",
-    userId: "Paid",
-    montant: "$450.00",
-    createdAt: 1658959200000,
-  },
-  {
-    id: "INV005",
-    userId: "Paid",
-    montant: "$550.00",
-    createdAt: 1658872800000,
-  },
-  {
-    id: "INV006",
-    userId: "Pending",
-    montant: "$200.00",
-    createdAt: 1658786400000,
-  },
-  {
-    id: "INV007",
-    userId: "Unpaid",
-    montant: "$300.00",
-    createdAt: 1658700000000,
-  },
-];
